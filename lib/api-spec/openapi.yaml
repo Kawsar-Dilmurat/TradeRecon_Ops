@@ -1,0 +1,780 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: TradeReconOps API - Cross-border financial reconciliation platform
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: upload
+    description: CSV file upload operations
+  - name: reconciliation
+    description: Reconciliation engine operations
+  - name: dashboard
+    description: Dashboard summary operations
+  - name: results
+    description: Reconciliation results operations
+  - name: ai
+    description: AI audit insights operations
+  - name: reports
+    description: Report export operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /upload/bank:
+    post:
+      operationId: uploadBankStatement
+      tags: [upload]
+      summary: Upload bank statement CSV
+      description: Upload and parse a USD bank statement CSV file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        "200":
+          description: Upload successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResult"
+        "400":
+          description: Invalid CSV format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /upload/ledger:
+    post:
+      operationId: uploadLedger
+      tags: [upload]
+      summary: Upload internal ledger CSV
+      description: Upload and parse a CNY internal ledger CSV file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+              required:
+                - file
+      responses:
+        "200":
+          description: Upload successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResult"
+        "400":
+          description: Invalid CSV format
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /reconcile:
+    post:
+      operationId: runReconciliation
+      tags: [reconciliation]
+      summary: Run reconciliation engine
+      description: Execute the deterministic reconciliation engine on uploaded data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReconcileRequest"
+      responses:
+        "200":
+          description: Reconciliation complete
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReconcileResponse"
+        "400":
+          description: No data to reconcile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get dashboard summary
+      description: Returns aggregated reconciliation statistics for the dashboard
+      parameters:
+        - name: batchId
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /results:
+    get:
+      operationId: getResults
+      tags: [results]
+      summary: Get reconciliation results
+      description: Returns paginated, filtered reconciliation results
+      parameters:
+        - name: batchId
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+        - name: riskLevel
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: Reconciliation results
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultsPage"
+
+  /results/{resultId}:
+    get:
+      operationId: getResultById
+      tags: [results]
+      summary: Get single reconciliation result
+      parameters:
+        - name: resultId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Single result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReconciliationResult"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /batches:
+    get:
+      operationId: getBatches
+      tags: [reconciliation]
+      summary: List all reconciliation batches
+      description: Returns all upload batches sorted by most recent
+      responses:
+        "200":
+          description: List of batches
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UploadBatch"
+
+  /ai/audit-summary:
+    post:
+      operationId: generateAuditSummary
+      tags: [ai]
+      summary: Generate AI audit summary
+      description: Generates an AI-powered audit summary of reconciliation results (AI summarizes only, never decides statuses)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiRequest"
+      responses:
+        "200":
+          description: AI audit summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiAuditSummary"
+
+  /ai/recommended-actions:
+    post:
+      operationId: generateRecommendedActions
+      tags: [ai]
+      summary: Generate AI recommended actions
+      description: Generates practical next-step recommendations based on rule engine output
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiRequest"
+      responses:
+        "200":
+          description: Recommended actions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AiRecommendedActions"
+
+  /reports/latest:
+    get:
+      operationId: getLatestReport
+      tags: [reports]
+      summary: Get latest audit report
+      description: Returns the latest generated markdown audit report
+      parameters:
+        - name: batchId
+          in: query
+          required: false
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: Latest report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditReport"
+        "404":
+          description: No report found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /reports/generate:
+    post:
+      operationId: generateReport
+      tags: [reports]
+      summary: Generate audit report
+      description: Generates and stores an audit-ready markdown report for a batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AiRequest"
+      responses:
+        "200":
+          description: Generated report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuditReport"
+
+  /fx-rates:
+    get:
+      operationId: getFxRates
+      tags: [reconciliation]
+      summary: Get available FX rates
+      description: Returns the FX rate table used for reconciliation
+      responses:
+        "200":
+          description: FX rates
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FxRate"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: ["string", "null"]
+      required:
+        - error
+
+    UploadResult:
+      type: object
+      properties:
+        batchId:
+          type: string
+        rowCount:
+          type: integer
+        fileName:
+          type: string
+        uploadType:
+          type: string
+        errors:
+          type: array
+          items:
+            type: string
+        warnings:
+          type: array
+          items:
+            type: string
+      required:
+        - batchId
+        - rowCount
+        - fileName
+        - uploadType
+        - errors
+        - warnings
+
+    ReconcileRequest:
+      type: object
+      properties:
+        bankBatchId:
+          type: string
+        ledgerBatchId:
+          type: string
+        settings:
+          $ref: "#/components/schemas/ReconciliationSettings"
+      required:
+        - bankBatchId
+        - ledgerBatchId
+
+    ReconciliationSettings:
+      type: object
+      properties:
+        fuzzyThreshold:
+          type: integer
+          default: 80
+          description: Fuzzy matching threshold (0-100)
+        dateWindowDays:
+          type: integer
+          default: 3
+          description: Date matching window in days
+        fxVariancePct:
+          type: number
+          default: 0.5
+          description: FX variance tolerance percentage
+        fxVarianceAbs:
+          type: number
+          default: 50
+          description: FX variance tolerance absolute CNY amount
+
+    ReconcileResponse:
+      type: object
+      properties:
+        batchId:
+          type: string
+        totalResults:
+          type: integer
+        riskScore:
+          type: integer
+        summary:
+          $ref: "#/components/schemas/ReconcileSummary"
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReconciliationResult"
+      required:
+        - batchId
+        - totalResults
+        - riskScore
+        - summary
+        - results
+
+    ReconcileSummary:
+      type: object
+      properties:
+        matched:
+          type: integer
+        fxVariance:
+          type: integer
+        amountMismatch:
+          type: integer
+        unmatchedBank:
+          type: integer
+        unmatchedLedger:
+          type: integer
+        possibleDuplicate:
+          type: integer
+        manualReview:
+          type: integer
+        totalUnresolvedAmount:
+          type: string
+      required:
+        - matched
+        - fxVariance
+        - amountMismatch
+        - unmatchedBank
+        - unmatchedLedger
+        - possibleDuplicate
+        - manualReview
+        - totalUnresolvedAmount
+
+    ReconciliationResult:
+      type: object
+      properties:
+        id:
+          type: string
+        batchId:
+          type: string
+        bankDate:
+          type: ["string", "null"]
+        bankDescription:
+          type: ["string", "null"]
+        bankAmount:
+          type: ["string", "null"]
+        bankCurrency:
+          type: ["string", "null"]
+        bankType:
+          type: ["string", "null"]
+        bankReference:
+          type: ["string", "null"]
+        ledgerDate:
+          type: ["string", "null"]
+        ledgerVendorClient:
+          type: ["string", "null"]
+        ledgerAmount:
+          type: ["string", "null"]
+        ledgerCurrency:
+          type: ["string", "null"]
+        ledgerInvoiceId:
+          type: ["string", "null"]
+        ledgerCategory:
+          type: ["string", "null"]
+        exchangeRate:
+          type: ["string", "null"]
+        convertedAmount:
+          type: ["string", "null"]
+        differenceAmount:
+          type: ["string", "null"]
+        differencePct:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum:
+            - MATCHED
+            - FX_VARIANCE
+            - AMOUNT_MISMATCH
+            - UNMATCHED_BANK
+            - UNMATCHED_LEDGER
+            - POSSIBLE_DUPLICATE
+            - MANUAL_REVIEW
+        riskLevel:
+          type: string
+          enum:
+            - LOW
+            - MEDIUM
+            - HIGH
+            - CRITICAL
+        reason:
+          type: string
+        fuzzyScore:
+          type: ["number", "null"]
+      required:
+        - id
+        - batchId
+        - status
+        - riskLevel
+        - reason
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalBankTransactions:
+          type: integer
+        totalLedgerEntries:
+          type: integer
+        matched:
+          type: integer
+        fxVarianceCount:
+          type: integer
+        realDiscrepancyCount:
+          type: integer
+        manualReviewCount:
+          type: integer
+        possibleDuplicateCount:
+          type: integer
+        totalUnresolvedAmount:
+          type: string
+        riskScore:
+          type: integer
+        riskScoreBreakdown:
+          $ref: "#/components/schemas/RiskScoreBreakdown"
+        statusDistribution:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusCount"
+        lastReconciliationAt:
+          type: ["string", "null"]
+        activeBatchId:
+          type: ["string", "null"]
+      required:
+        - totalBankTransactions
+        - totalLedgerEntries
+        - matched
+        - fxVarianceCount
+        - realDiscrepancyCount
+        - manualReviewCount
+        - possibleDuplicateCount
+        - totalUnresolvedAmount
+        - riskScore
+        - riskScoreBreakdown
+        - statusDistribution
+
+    RiskScoreBreakdown:
+      type: object
+      properties:
+        unmatchedCount:
+          type: integer
+        amountMismatchCount:
+          type: integer
+        duplicateCount:
+          type: integer
+        criticalCount:
+          type: integer
+        fxVarianceCount:
+          type: integer
+        formula:
+          type: string
+      required:
+        - unmatchedCount
+        - amountMismatchCount
+        - duplicateCount
+        - criticalCount
+        - fxVarianceCount
+        - formula
+
+    StatusCount:
+      type: object
+      properties:
+        status:
+          type: string
+        count:
+          type: integer
+      required:
+        - status
+        - count
+
+    ResultsPage:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: "#/components/schemas/ReconciliationResult"
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+      required:
+        - results
+        - total
+        - page
+        - pageSize
+        - totalPages
+
+    UploadBatch:
+      type: object
+      properties:
+        id:
+          type: string
+        bankFileName:
+          type: ["string", "null"]
+        ledgerFileName:
+          type: ["string", "null"]
+        bankRowCount:
+          type: ["integer", "null"]
+        ledgerRowCount:
+          type: ["integer", "null"]
+        status:
+          type: string
+        createdAt:
+          type: string
+        reconciledAt:
+          type: ["string", "null"]
+        riskScore:
+          type: ["integer", "null"]
+      required:
+        - id
+        - status
+        - createdAt
+
+    FxRate:
+      type: object
+      properties:
+        date:
+          type: string
+        usdToCny:
+          type: string
+        cnyToUsd:
+          type: string
+        source:
+          type: string
+      required:
+        - date
+        - usdToCny
+        - cnyToUsd
+        - source
+
+    AiRequest:
+      type: object
+      properties:
+        batchId:
+          type: string
+      required:
+        - batchId
+
+    AiAuditSummary:
+      type: object
+      properties:
+        batchId:
+          type: string
+        summary:
+          type: string
+        highRiskExplanations:
+          type: array
+          items:
+            $ref: "#/components/schemas/RiskExplanation"
+        generatedAt:
+          type: string
+        provider:
+          type: string
+      required:
+        - batchId
+        - summary
+        - highRiskExplanations
+        - generatedAt
+        - provider
+
+    RiskExplanation:
+      type: object
+      properties:
+        resultId:
+          type: string
+        explanation:
+          type: string
+        riskLevel:
+          type: string
+      required:
+        - resultId
+        - explanation
+        - riskLevel
+
+    AiRecommendedActions:
+      type: object
+      properties:
+        batchId:
+          type: string
+        actions:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecommendedAction"
+        generatedAt:
+          type: string
+        provider:
+          type: string
+      required:
+        - batchId
+        - actions
+        - generatedAt
+        - provider
+
+    RecommendedAction:
+      type: object
+      properties:
+        priority:
+          type: string
+          enum: [HIGH, MEDIUM, LOW]
+        category:
+          type: string
+        action:
+          type: string
+        affectedItems:
+          type: integer
+      required:
+        - priority
+        - category
+        - action
+        - affectedItems
+
+    AuditReport:
+      type: object
+      properties:
+        id:
+          type: string
+        batchId:
+          type: string
+        markdownContent:
+          type: string
+        generatedAt:
+          type: string
+        provider:
+          type: string
+      required:
+        - id
+        - batchId
+        - markdownContent
+        - generatedAt
+        - provider

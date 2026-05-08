@@ -1,0 +1,8 @@
+date,vendor_or_client,amount,currency,invoice_id,category
+2026-04-25,Pacific Components,10862.25,CNY,INV-B001,Revenue
+2026-04-26,Golden Harbor Logistics,5790.40,CNY,INV-B002,Revenue
+2026-04-27,WestBridge Retail,3617.50,CNY,INV-B003,Expense
+2026-04-28,Northstar Imports,14462.00,CNY,INV-B004,Revenue
+2026-04-28,BlueRiver Packaging,6500.00,CNY,INV-B005,Revenue
+2026-04-29,Harbor Cloud Services,8668.00,CNY,INV-B006,Revenue
+2026-04-30,Northstar Freight,4100.00,CNY,INV-B007,Expense

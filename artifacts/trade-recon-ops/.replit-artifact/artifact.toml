@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "TradeReconOps"
+version = "1.0.0"
+id = "artifacts/trade-recon-ops"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22063
+
+[services.development]
+run = "pnpm --filter @workspace/trade-recon-ops run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/trade-recon-ops", "run", "build" ]
+publicDir = "artifacts/trade-recon-ops/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22063"
+BASE_PATH = "/"

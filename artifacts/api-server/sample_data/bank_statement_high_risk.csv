@@ -1,0 +1,10 @@
+date,description,amount,currency,type,reference
+2026-05-01,Wire from Apex Trading,1000.00,USD,credit,BANK-001
+2026-05-02,Revenue from Canton Systems,2000.00,USD,credit,BANK-002
+2026-05-03,Payment to Sunrise Freight,500.00,USD,debit,BANK-003
+2026-05-05,Service fee Beijing Consulting,750.00,USD,debit,BANK-004
+2026-05-06,Wire transfer Jade Electronics,1500.00,USD,credit,BANK-005
+2026-05-07,Consulting from Dragon Software,800.00,USD,credit,BANK-006
+2026-05-02,Wire from Apex Trading,1000.00,USD,credit,BANK-007
+2026-05-04,Cash deposit unclassified,300.00,USD,credit,BANK-008
+2026-05-07,Payment to Shenzhen Parts,900.00,USD,debit,BANK-009

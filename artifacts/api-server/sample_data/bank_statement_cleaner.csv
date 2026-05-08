@@ -1,0 +1,9 @@
+date,description,amount,currency,type,reference
+2026-04-25,Wire from Pacific Components,1500.00,USD,credit,BNKB-001
+2026-04-26,Revenue from Golden Harbor Logistics,800.00,USD,credit,BNKB-002
+2026-04-27,Payment to WestBridge Retail,500.00,USD,debit,BNKB-003
+2026-04-28,Wire from Northstar Imports,2000.00,USD,credit,BNKB-004
+2026-04-28,Revenue from BlueRiver Packaging,900.00,USD,credit,BNKB-005
+2026-04-29,Wire from Harbor Cloud Services,1200.00,USD,credit,BNKB-006
+2026-04-30,Payment to Northstar Freight,650.00,USD,debit,BNKB-007
+2026-04-30,Wire from Meridian Trade Solutions,380.00,USD,credit,BNKB-008

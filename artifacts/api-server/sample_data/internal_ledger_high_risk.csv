@@ -1,0 +1,9 @@
+date,vendor_or_client,amount,currency,invoice_id,category
+2026-05-01,Apex Trading,7235.00,CNY,INV-001,Revenue
+2026-05-02,Canton Systems,14480.00,CNY,INV-002,Revenue
+2026-05-03,Sunrise Freight,3610.00,CNY,INV-003,Expense
+2026-05-05,Beijing Consulting,5415.00,CNY,INV-004,Expense
+2026-05-06,Jade Electronics,9000.00,CNY,INV-005,Revenue
+2026-05-07,Dragon Software,5500.00,CNY,INV-006,Revenue
+2026-05-07,Shenzhen Parts,6500.00,CNY,INV-007,Expense
+2026-05-10,Pearl River Holdings,2000.00,CNY,INV-008,Revenue
