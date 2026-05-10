@@ -142,8 +142,8 @@ Main demo files:
 Add screenshots to a `screenshots/` folder and update the image paths below.
 
 ### Dashboard
-<img width="2559" height="1252" alt="Dashboard-1" src="https://github.com/user-attachments/assets/f6696dfa-8cb2-40a0-9151-4813b934f786" />
-<img width="2530" height="1390" alt="Dashboard_2" src="https://github.com/user-attachments/assets/e7be32dd-c8cd-43ad-9c43-2b173824b801" />
+<img src="Screenshots/Dashboard_1.png" alt="Dashboard" width="900">
+<img src="Screenshots/Dashboard_2.png" alt="Dashboard" width="900">
 
 
 
