@@ -142,27 +142,30 @@ Main demo files:
 Add screenshots to a `screenshots/` folder and update the image paths below.
 
 ### Dashboard
-<img src="Screenshots/Dashboard_1.png" alt="Dashboard" width="900">
-<img src="Screenshots/Dashboard_2.png" alt="Dashboard" width="900">
+
+<img src="Screenshots/Dashboard_1.jpg" alt="TradeReconOps Dashboard 1" width="900">
+
+<img src="Screenshots/Dashboard_2.png" alt="TradeReconOps Dashboard 2" width="900">
 
 
 
 ### Upload Data
 
-<img width="2559" height="1055" alt="Upload_Data" src="https://github.com/user-attachments/assets/dd43eccc-5664-488b-879e-1430878f3761" />
+<img src="Screenshots/Upload_Data.png" alt="TradeReconOps Upload Data" width="900">
 
 ### Reconciliation Results
 
-<img width="2557" height="1289" alt="Reconciliation Results" src="https://github.com/user-attachments/assets/d5a6bd49-5ab6-4a53-9caf-5b55f648797c" />
+<img src="Screenshots/Upload_Data.png" alt="TradeReconOps Upload Data" width="900">
 
 ### AI Audit Insights
 
-<img width="2486" height="1427" alt="AI Audit Insights" src="https://github.com/user-attachments/assets/7d5fb3af-2a9b-4a31-a0b6-e3763cb58ea1" /><img width="2521" height="1425" alt="AI Audit Insights_2" src="https://github.com/user-attachments/assets/0ba7760d-fac3-43cf-8371-753ac4bcdc4a" />
-
+<img src="Screenshots/AI Audit Insights.png" alt="TradeReconOps AI Audit Insights" width="900">
+<img src="Screenshots/AI Audit Insights_2.png" alt="TradeReconOps AI Audit Insights 2" width="900">
 
 ### Audit Report Export
 
-<img width="2559" height="1280" alt="Export Report" src="https://github.com/user-attachments/assets/ed87e7a7-04c2-4d71-a743-0a92fb645087" />
+
+<img src="Screenshots/Export Report.png" alt="TradeReconOps Export Report" width="900">
 
 ---
 
