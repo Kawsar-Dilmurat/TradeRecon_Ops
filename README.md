@@ -155,7 +155,7 @@ Add screenshots to a `screenshots/` folder and update the image paths below.
 
 ### Reconciliation Results
 
-<img src="Screenshots/Upload_Data.png" alt="TradeReconOps Upload Data" width="900">
+<img src="Screenshots/Reconciliation Results.png" alt="TradeReconOps Reconciliation Results" width="900">
 
 ### AI Audit Insights
 
